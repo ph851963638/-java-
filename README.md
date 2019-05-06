@@ -41,10 +41,49 @@ String：字符串常量。也就是说String是不可变的对象，因此每�
 ---------------------  速度最慢   
 StringBuffer：字符串变量、线程安全；速度一般
 StringBuilder:字符串变量、非线程安全；速度最快
+八、reverses的方法
+
+   public static String reverse3(String s) {  
+        char[] array = s.toCharArray();  
+        String reverse = "";  
+        for (int i = array.length - 1; i >= 0; i--) {  
+            reverse += array[i];  
+        }  
+        return reverse;  
+    }  
+    
+    public static String reverse4(String s) {  
+        return new StringBuilder(s).reverse().toString();  
+    }  
  
+ 
+ 九、String 类的常用方法都有那些？
+   1.toCharArray   字符串变为字符数组
+   2.charAt        从字符串中  取出指定位置的字符
+   3.substring      字符截取  从一个字符串中取出里面的部分内容
+   public String(int beginIndex, int endIndex);
+   4. 大小写转换
+   public String   toLowerCase(); 大变小
+   public String   toUpperCase();  小变大
+   
+十、抽象类必须要有抽象方法吗？
+   答： 抽象类中不一定必须有抽象方法，但若是有抽象方法，类必须是抽象类
+   
+   
+ 十一、抽象类和普通类的区别
+ 1.抽象方法必须为public 或者protected   
+ 2.抽象类不能用来创建对象 不能被实例化
+ 3.如果一个类继承于一个抽象类，则子类必须实现父类的抽象方法，如子类没有继承父类的抽象方法，则子类也定义为abstract类。
 
  
+ 十二、抽象类能使用 final 修饰吗？
+ 不能，因为抽象类就是用来继承的，而被final修饰的类不能被继承。
  
+ 
+十三、接口和抽象类有什么区别？
+接口中只能定义方法和返回类型，无法定义属性，抽象类可以
+
+
  
  
  
