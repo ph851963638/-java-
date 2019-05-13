@@ -130,6 +130,53 @@ long lastModified()	         返回1970 年1 月1 日 0 时0 分 0 秒到文件�
 long length()	               返回文件内容长度
 String [ ]list()	            返回指定目录的全部内容，只列出名称
 File[ ] listFiles()	         返回一个包含了File对象所有子文件和子目录的File数组
+
+
+
+十八、mybatis 中 #{}和 ${}的区别是什么？
+1、#将传入的数据都当成一个字符串，会对自动传入的数据加一个双引号。如：order by #user_id#，如果传入的值是111,那么解析成sql时的值为order by "111", 如果传入的值是id，则解析成的sql为order by "id"
+使用${}方式传入的参数，mybatis不会对它进行特殊处理，而使用#{}传进来的参数，mybatis默认会将其当成字符串。可能在赋值给如id=#{id}和id=${id}看不出多大区别，但是作为表名或字段参数时可以明显看出，可以看看下面的例子
+
+2、#和$在预编译处理中是不一样的。#类似jdbc中的PreparedStatement，对于传入的参数，在预处理阶段会使用?代替
+总结：
+1、能使用#{}的地方应尽量使用#{}
+2、像PreparedStatement ，#{}可以有效防止sql注入，${}则可能导致sql注入成功。
+
+.mybatis 有几种分页方式
+1）Mybatis使用RowBounds对象进行分页，也可以直接编写sql实现分页，也可以使用Mybatis的分页插件。
+
+2）分页插件的原理：实现Mybatis提供的接口，实现自定义插件，在插件的拦截方法内拦截待执行的sql，然后重写sql。
+
+举例：select * from student，拦截sql后重写为：select t.* from （select * from student）t limit 0，10
+ 3） 对象数组实现分页
+ 4）  sql 语句实现分页
+ 
+ 
+二十、mybatis 逻辑分页和物理分页的区别是什么
+ 1：逻辑分页 内存.mybatis 逻辑分页和物理分页的区别是什么开销比较大,在数据量比较小的情况下效率比物理分页高;在数据量很大的情况下,内存开销过大,容易内存溢出,不建议使用
+
+  2：物理分页 内存开销比较小,在数据量比较小的情况下效率比逻辑分页还是低,在数据量很大的情况下,建议使用物理分页
+  
+  
+  二十一、延迟加载
+  延迟加载主要是通过动态代理的形式实现，通过代理拦截到指定方法，执行数据加载。
+  
+  
+
+用户发起查询请求，查找某条数据，sqlSession先去缓存中查找，是否有该数据，如果有，读取；
+如果没有，从数据库中查询，并将查询到的数据放入一级缓存区域，供下次查找使用。
+但sqlSession执行commit，即增删改操作时会清空缓存。这么做的目的是避免脏读。
+用户发起查询请求，查找某条数据，sqlSession先去缓存中查找，是否有该数据，如果有，读取；
+如果没有，从数据库中查询，并将查询到的数据放入一级缓存区域，供下次查找使用。
+但sqlSession执行commit，即增删改操作时会清空缓存。这么做的目的是避免脏读。
+如果commit不清空缓存，会有以下场景：A查询了某商品库存为10件，并将10件库存的数据存入缓存中，之后被客户买走了10件，数据被delete了，但是下次查询这件商品时，并不从数据库中查询，而是从缓存中查询，就会出现错误。
+既然有了一级缓存，那么为什么要提供二级缓存呢？
+二级缓存是mapper级别的缓存，多个SqlSession去操作同一个Mapper的sql语句，多个SqlSession可以共用二级缓存，二级缓存是跨SqlSession的。二级缓存的作用范围更大。
+还有一个原因，实际开发中，MyBatis通常和Spring进行整合开发。Spring将事务放到Service中管理，对于每一个service中的sqlsession是不同的，这是通过mybatis-spring中的org.mybatis.spring.mapper.MapperScannerConfigurer创建sqlsession自动注入到service中的。 每次查询之后都要进行关闭sqlSession，关闭之后数据被清空。所以spring整合之后，如果没有事务，一级缓存是没有意义的。
+ 
+二级缓存是mapper级别的缓存，多个SqlSession去操作同一个Mapper的sql语句，多个SqlSession可以共用二级缓存，二级缓存是跨SqlSession的。
+UserMapper有一个二级缓存区域（按namespace分），其它mapper也有自己的二级缓存区域（按namespace分）。每一个namespace的mapper都有一个二级缓存区域，两个mapper的namespace如果相同，这两个mapper执行sql查询到数据将存在相同的二级缓存区域中。
+--------------------- 
  
  
  
