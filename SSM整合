@@ -1,0 +1,115 @@
+web.xml文件中包含
+
+<display-name></display-name>
+
+
+1、前端控制器
+2、spring配置
+servlet>
+    <servlet-name>springmvc</servlet-name>
+    <servlet-class>
+   org.springframework.web.servlet.DispatcherServlet
+   </servlet-class>
+   <init-param>   <!-- 修改springmvc的配置名称 -->
+<param-name>contextConfigLocation</param-name>
+<param-value>classpath:springmvc.xml</param-value>
+</init-param>
+  </servlet>
+  <servlet-mapping>
+     <servlet-name>springmvc</servlet-name>
+     <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  
+  <listener>
+<listener-class> org.springframework.web.context.ContextLoaderListener
+</listener-class>
+</listener>
+<context-param>
+<param-name>contextConfigLocation</param-name>
+<param-value>classpath:applicationContext.xml</param-value> </context-param>
+ 
+ 
+ applicationContext 配置文件中应包含
+ 1、扫描包
+ 2、数据源
+ 3、sql工厂
+ 
+ 
+ 《扫描包》
+ <context:component-scan base-package="com.ssm.service,com.ssm.dao"></context:component-scan>
+
+ 
+<!-- Mybatis -->
+<!-- 配置mapper扫描 -->
+<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	<property name="basePackage" value="com.ssm.dao" />
+</bean>
+
+
+<!-- 数据源 -->
+<bean id="dataSource"
+class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+<property name="driverClassName">
+<value>com.mysql.jdbc.Driver</value>
+</property>
+<property name="url">
+<value>jdbc:mysql://localhost:3306/shopping?useUnicode=true&amp;characterEncoding=utf8
+</value>
+</property>
+<property name="username">
+<value>root</value>
+</property>
+<property name="password">
+<value>root</value>
+</property>
+</bean>
+mybatis-config 无效
+
+spring-mvc
+1、扫描控制器
+2、处理静态资源
+3、解析JSON
+4、视图解析器
+5、配置主页面
+	<context:component-scan base-package="com.ssm.controller"></context:component-scan>
+<!-- 处理静态资源 -->
+	<mvc:default-servlet-handler />
+
+<!--解析json--!>
+<mvc:annotation-driven>
+
+		<mvc:message-converters>
+			<bean
+				class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+				<!-- MediaTypes -->
+				<property name="supportedMediaTypes">
+					<list>
+						<value>application/json;charset=utf-8</value>
+						<value>text/json;charset=utf-8</value>
+						<!--解决IE系列浏览器在服务器返回json时提示下载问题 -->
+						<value>text/html;charset=utf-8</value>
+					</list>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+<!-- 视图解析器 -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<!-- jstl jsp使用标签库 <c:foreach> <c:set> <c:out> <c:if>等等 jstl.jar standard.jar -->
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+  
+  <!-- 配置欢迎页面 -->
+	<mvc:view-controller path="/" view-name="forward:/welcome" />
+
+</beans>
+
+
+ 
+  
+  
